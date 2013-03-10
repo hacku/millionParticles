@@ -1,16 +1,18 @@
 #include "cinder/app/AppBasic.h"
+
 #include "cinder/Rand.h"
-#include "cinder/Timer.h"
 #include "cinder/Surface.h"
-#include "cinder/gl/gl.h"
-#include "cinder/gl/Texture.h"
 #include "cinder/Text.h"
-#include "cinder/gl/Fbo.h"
-#include "cinder/gl/Vbo.h"
-#include "cinder/gl/GlslProg.h"
 #include "cinder/Utilities.h"
 #include "cinder/ImageIo.h"
 #include "cinder/Perlin.h"
+
+#include "cinder/gl/gl.h"
+#include "cinder/gl/Texture.h"
+#include "cinder/gl/Fbo.h"
+#include "cinder/gl/Vbo.h"
+#include "cinder/gl/GlslProg.h"
+
 
 #include "Resources.h"
 
@@ -46,8 +48,6 @@ class millionParticlesApp : public AppBasic {
 	bool mIsFullScreen;
 	bool mCreateParticles;
 	
-	Timer mTimer;
-
     Perlin mPerlin;
     
 	Vec3f mVertPos;
@@ -117,10 +117,9 @@ void millionParticlesApp::resize( ResizeEvent event )
 
 void millionParticlesApp::prepareSettings(Settings *settings)
 {
-	settings->setWindowSize(WIDTH,HEIGHT);
+	//settings->setWindowSize(WIDTH,HEIGHT);
     settings->setWindowSize(1280,720);
-    settings->setFullScreen();
-	settings->setFrameRate(30.0f);
+    settings->setFrameRate(30.0f);
 }
 
 void millionParticlesApp::setup()
@@ -190,7 +189,7 @@ void millionParticlesApp::setup()
 
 			//particle age
 			mInfoSurface.setPixel(iterator.getPos(),
-                                  ColorA(Rand::randFloat(.0f,1.0f), 1.0f,0.00f,1.00f));
+                                  ColorA(Rand::randFloat(.007f,1.0f), 1.0f,0.00f,1.00f));
 
 		}
 	}
@@ -259,9 +258,6 @@ void millionParticlesApp::setup()
 	mVbo.bufferIndices(indices);
 	mVbo.bufferTexCoords2d(0, texCoords);
 
-    //start timer
-	mTimer = Timer();
-	mTimer.start();
 }
 
 void millionParticlesApp::mouseDown( MouseEvent event )
@@ -345,8 +341,8 @@ void millionParticlesApp::update()
     mBufferOut = (mBufferIn + 1) % 2;
     
     //for recording
-    if (getElapsedFrames() == 2000)
-        exit(0);
+//    if (getElapsedFrames() == 2000)
+//        exit(0);
     
 }
 
@@ -390,7 +386,7 @@ void millionParticlesApp::draw()
 
 	mFbo[mBufferIn].unbindTexture();
     
-    writeImage( "/Users/hacku/Desktop/img/" + toString(getElapsedFrames()) + ".tif",   copyWindowSurface() );
+    //writeImage( "/Users/hacku/Desktop/img/" + toString(getElapsedFrames()) + ".tif",   copyWindowSurface() );
     
 	gl::color(Color(1,1,1));	
 	gl::setMatricesWindow( getWindowSize() );
