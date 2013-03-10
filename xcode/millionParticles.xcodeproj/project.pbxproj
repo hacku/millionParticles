@@ -15,6 +15,7 @@
 		00B784B60FF439BC000DE1D7 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00B784B20FF439BC000DE1D7 /* CoreAudio.framework */; };
 		00BAE65A0E7ED9C10018A608 /* millionParticlesApp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00BAE6590E7ED9C10018A608 /* millionParticlesApp.cpp */; };
 		00CCAF15116A9FEE008396D5 /* CinderApp.icns in Resources */ = {isa = PBXBuildFile; fileRef = 00CCAF14116A9FEE008396D5 /* CinderApp.icns */; };
+		4B43DE1516ED2DCC001D226B /* point.png in Resources */ = {isa = PBXBuildFile; fileRef = 4B43DE1416ED2DCC001D226B /* point.png */; };
 		4B4BB6BA13B1F296003531C0 /* posShader.frag in Sources */ = {isa = PBXBuildFile; fileRef = 4B4BB6B413B1F296003531C0 /* posShader.frag */; };
 		4B4BB6BB13B1F296003531C0 /* posShader.vert in Sources */ = {isa = PBXBuildFile; fileRef = 4B4BB6B513B1F296003531C0 /* posShader.vert */; };
 		4B4BB6BC13B1F296003531C0 /* velShader.frag in Sources */ = {isa = PBXBuildFile; fileRef = 4B4BB6B613B1F296003531C0 /* velShader.frag */; };
@@ -43,6 +44,7 @@
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		32CA4F630368D1EE00C91783 /* millionParticles_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = millionParticles_Prefix.pch; sourceTree = "<group>"; };
+		4B43DE1416ED2DCC001D226B /* point.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = point.png; path = ../resources/point.png; sourceTree = "<group>"; };
 		4B4BB6B413B1F296003531C0 /* posShader.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = posShader.frag; path = ../resources/posShader.frag; sourceTree = SOURCE_ROOT; };
 		4B4BB6B513B1F296003531C0 /* posShader.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = posShader.vert; path = ../resources/posShader.vert; sourceTree = SOURCE_ROOT; xcLanguageSpecificationIdentifier = xcode.lang.glsl; };
 		4B4BB6B613B1F296003531C0 /* velShader.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = velShader.frag; path = ../resources/velShader.frag; sourceTree = SOURCE_ROOT; };
@@ -143,6 +145,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				4B43DE1416ED2DCC001D226B /* point.png */,
 				4B4BB6B413B1F296003531C0 /* posShader.frag */,
 				4B4BB6B513B1F296003531C0 /* posShader.vert */,
 				4B4BB6B613B1F296003531C0 /* velShader.frag */,
@@ -217,6 +220,7 @@
 				4B4BB6D513B1F33F003531C0 /* velShader.frag in Resources */,
 				4B4BB6D613B1F33F003531C0 /* velShader.vert in Resources */,
 				00CCAF15116A9FEE008396D5 /* CinderApp.icns in Resources */,
+				4B43DE1516ED2DCC001D226B /* point.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

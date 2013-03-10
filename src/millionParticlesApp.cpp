@@ -62,6 +62,8 @@ class millionParticlesApp : public AppBasic {
 	gl::Texture mVelTex;
 	gl::Texture mInfoTex;
     gl::Texture mNoiseTex;
+    
+    gl::Texture mSpriteTex;
 };
 
 void millionParticlesApp::initFBO() 
@@ -117,8 +119,8 @@ void millionParticlesApp::resize( ResizeEvent event )
 
 void millionParticlesApp::prepareSettings(Settings *settings)
 {
-	//settings->setWindowSize(WIDTH,HEIGHT);
-    settings->setWindowSize(1280,720);
+	settings->setWindowSize(WIDTH,HEIGHT);
+    //settings->setWindowSize(1280,720);
     settings->setFrameRate(30.0f);
 }
 
@@ -200,6 +202,9 @@ void millionParticlesApp::setup()
     
     gl::Texture::Format tFormatSmall;
 	tFormat.setInternalFormat(GL_RGBA8);
+    
+    mSpriteTex = gl::Texture( loadImage( loadResource( "point.png" ) ), tFormatSmall);
+    
     
     mNoiseTex = gl::Texture(mNoiseSurface, tFormatSmall);
 	mNoiseTex.setWrap( GL_REPEAT, GL_REPEAT );
@@ -341,7 +346,7 @@ void millionParticlesApp::update()
     mBufferOut = (mBufferIn + 1) % 2;
     
     //for recording
-//    if (getElapsedFrames() == 2000)
+//    if (getElapsedFrames() == 600)
 //        exit(0);
     
 }
@@ -355,24 +360,29 @@ void millionParticlesApp::draw()
 	gl::setViewport( getWindowBounds() );
 	
     gl::clear( ColorA( 0.0f, 0.0f, 0.0f, 1.0f ) );
-	gl::enableAlphaBlending( false );
+
+	gl::enableAlphaBlending();
+    glDisable(GL_DEPTH_TEST);
 
 	glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
 
 	mFbo[mBufferIn].bindTexture(0,0);
 	mFbo[mBufferIn].bindTexture(1,1);
 	mFbo[mBufferIn].bindTexture(2,2);
+    
+    mSpriteTex.bind(3);
 
 	//Bewegungsshader
 	mPosShader.bind();
 	mPosShader.uniform("posTex",0);
 	mPosShader.uniform("velTex",1);
 	mPosShader.uniform("infTex",2);
+   	mPosShader.uniform("spriteTex",3);
 
 	mPosShader.uniform("scale",(float)PARTICLES);
 
 	gl::color(ColorA(1.0f,1.0f,1.0f,1.0f));
-    
+    //glTranslatef(Vec3f(getWindowWidth() / 4  - PARTICLES,0.0f,0.0f));
     gl::pushMatrices();
 
     glScalef(getWindowHeight() / (float)PARTICLES , getWindowHeight() / (float)PARTICLES ,1.0f);
@@ -383,13 +393,15 @@ void millionParticlesApp::draw()
     gl::popMatrices();
    
 	mPosShader.unbind();
+    
+    mSpriteTex.unbind();
 
 	mFbo[mBufferIn].unbindTexture();
     
-    //writeImage( "/Users/hacku/Desktop/img/" + toString(getElapsedFrames()) + ".tif",   copyWindowSurface() );
+//    writeImage( "/Users/hacku/Desktop/img/1m/" + toString(getElapsedFrames()) + ".tif",   copyWindowSurface() );
     
-	gl::color(Color(1,1,1));	
-	gl::setMatricesWindow( getWindowSize() );
+//	gl::color(Color(1,1,1));	
+//	gl::setMatricesWindow( getWindowSize() );
     
 	//drawText();
 	
