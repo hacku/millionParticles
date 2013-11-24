@@ -1,4 +1,4 @@
-#include "cinder/app/AppBasic.h"
+#include "cinder/app/AppNative.h"
 
 #include "cinder/Rand.h"
 #include "cinder/Surface.h"
@@ -20,25 +20,12 @@ using namespace ci;
 using namespace ci::app;
 using namespace std;
 
-#define WIDTH 1024
-#define HEIGHT 1024
+#define WIDTH 512
+#define HEIGHT 512
 #define PARTICLES 1024
 
-class millionParticlesApp : public AppBasic {
-  public:
-	void setup();
-	void prepareSettings(Settings *settings);
-	void resize( ResizeEvent event );
-	void mouseDown( MouseEvent event );	
-	void mouseDrag( MouseEvent event );
-	void mouseMove( MouseEvent event );
-	void keyDown( KeyEvent event);
-	void keyUp( KeyEvent event);
-	void update();
-	void draw();
-	void initFBO();
-	void drawText();
-
+class millionParticlesApp : public AppNative {
+private:
 	int mPos;
 	int mBufferIn;
     int mBufferOut;
@@ -64,70 +51,80 @@ class millionParticlesApp : public AppBasic {
     gl::Texture mNoiseTex;
     
     gl::Texture mSpriteTex;
+
+public:
+	void setup();
+	void prepareSettings(Settings *settings);
+
+	void mouseDown( MouseEvent event );
+	void mouseDrag( MouseEvent event );
+	void mouseMove( MouseEvent event );
+    
+	void keyDown( KeyEvent event);
+	void keyUp( KeyEvent event);
+	
+    void update();
+	void draw();
+	void initFBO();
+	void drawText();
 };
 
-void millionParticlesApp::initFBO() 
+void millionParticlesApp::initFBO()
 {
 	mPos = 0;
 	mBufferIn = 0;
 	mBufferOut = 1;
-
+    
 	mFbo[0].bindFramebuffer();
 	mFbo[1].bindFramebuffer();
-
+    
 	//Positionen
 	glDrawBuffer(GL_COLOR_ATTACHMENT0_EXT);
 	
 	gl::setMatricesWindow( mFbo[0].getSize(), false );
 	gl::setViewport( mFbo[0].getBounds() );
-
+    
 	glClearColor(0.0f,0.0f,0.0f,1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+    
 	mPosTex.enableAndBind();
 	gl::draw(mPosTex,mFbo[0].getBounds());
 	mPosTex.unbind();
-
+    
     //velocity buffer
 	glDrawBuffer(GL_COLOR_ATTACHMENT1_EXT);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+    
 	mVelTex.enableAndBind();
 	gl::draw(mVelTex,mFbo[0].getBounds());
 	mVelTex.unbind();
-
+    
 	//particle information buffer
 	glDrawBuffer(GL_COLOR_ATTACHMENT2_EXT);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+    
 	mInfoTex.enableAndBind();
 	gl::draw(mInfoTex,mFbo[0].getBounds());
 	mInfoTex.unbind();
-
+    
 	mFbo[1].unbindFramebuffer();
 	mFbo[0].unbindFramebuffer();
-
+    
 	mPosTex.disable();
 	mVelTex.disable();
 	mInfoTex.disable();
 }
 
-void millionParticlesApp::resize( ResizeEvent event )
-{
-
-}
-
 void millionParticlesApp::prepareSettings(Settings *settings)
 {
 	settings->setWindowSize(WIDTH,HEIGHT);
-    //settings->setWindowSize(1280,720);
     settings->setFrameRate(30.0f);
 }
 
 void millionParticlesApp::setup()
 {
 	gl::clear();
-
+    
 	try {
 		mPosShader = gl::GlslProg(ci::app::loadResource(POS_VS),ci::app::loadResource(POS_FS));
 		mVelShader = gl::GlslProg(ci::app::loadResource(VEL_VS),ci::app::loadResource(VEL_FS));
@@ -153,18 +150,18 @@ void millionParticlesApp::setup()
 	Surface32f mVelSurface = Surface32f(PARTICLES,PARTICLES,true);
 	Surface32f mInfoSurface = Surface32f(PARTICLES,PARTICLES,true);
     Surface32f mNoiseSurface = Surface32f(PARTICLES,PARTICLES,true);
-
+    
 	Surface32f::Iter iterator = mPosSurface.getIter();
 	
-
+    
 	while(iterator.line())
 	{
 		while(iterator.pixel())
 		{
-          
+            
             mVertPos = Vec3f(Rand::randFloat(getWindowWidth()) / (float)getWindowWidth(),
                              Rand::randFloat(getWindowHeight()) / (float)getWindowHeight(),0.0f);
-
+            
             //velocity
 			Vec2f vel = Vec2f(Rand::randFloat(-.005f,.005f),Rand::randFloat(-.005f,.005f));
             
@@ -185,17 +182,17 @@ void millionParticlesApp::setup()
 			//position + mass
 			mPosSurface.setPixel(iterator.getPos(),
                                  ColorA(mVertPos.x,mVertPos.y,mVertPos.z,
-                                 Rand::randFloat(.00005f,.0002f)));
+                                        Rand::randFloat(.00005f,.0002f)));
 			//forces + decay
 			mVelSurface.setPixel(iterator.getPos(), Color(vel.x,vel.y, Rand::randFloat(.01f,1.00f)));
-
+            
 			//particle age
 			mInfoSurface.setPixel(iterator.getPos(),
                                   ColorA(Rand::randFloat(.007f,1.0f), 1.0f,0.00f,1.00f));
-
+            
 		}
 	}
-
+    
     //gl texture settings
 	gl::Texture::Format tFormat;
 	tFormat.setInternalFormat(GL_RGBA16F_ARB);
@@ -220,12 +217,12 @@ void millionParticlesApp::setup()
 	mVelTex.setWrap( GL_REPEAT, GL_REPEAT );
 	mVelTex.setMinFilter( GL_NEAREST );
 	mVelTex.setMagFilter( GL_NEAREST );
-
+    
 	mInfoTex = gl::Texture(mInfoSurface, tFormatSmall);
 	mInfoTex.setWrap( GL_REPEAT, GL_REPEAT );
 	mInfoTex.setMinFilter( GL_NEAREST );
 	mInfoTex.setMagFilter( GL_NEAREST );
-
+    
 	//initialize fbo
 	gl::Fbo::Format format;
 	format.enableDepthBuffer(false);
@@ -233,11 +230,11 @@ void millionParticlesApp::setup()
 	format.setMinFilter( GL_NEAREST );
 	format.setMagFilter( GL_NEAREST );
 	format.setWrap(GL_CLAMP,GL_CLAMP);
-	format.setColorInternalFormat( GL_RGBA16F_ARB );	
+	format.setColorInternalFormat( GL_RGBA16F_ARB );
 	
 	mFbo[0] = gl::Fbo(PARTICLES,PARTICLES, format);
 	mFbo[1] = gl::Fbo(PARTICLES,PARTICLES, format);
-
+    
 	initFBO();
 	
 	//fill dummy fbo
@@ -262,12 +259,12 @@ void millionParticlesApp::setup()
 	
 	mVbo.bufferIndices(indices);
 	mVbo.bufferTexCoords2d(0, texCoords);
-
+    
 }
 
 void millionParticlesApp::mouseDown( MouseEvent event )
 {
-
+    
 }
 
 void millionParticlesApp::mouseMove( MouseEvent event )
@@ -285,7 +282,7 @@ void millionParticlesApp::keyUp( KeyEvent event)
 
 void millionParticlesApp::keyDown( KeyEvent event)
 {
-
+    
 	if (event.getChar() == 't') {
 		mDrawTextures = !mDrawTextures;
 	} else if (event.getChar() == 'f') {
@@ -300,7 +297,7 @@ void millionParticlesApp::keyDown( KeyEvent event)
  **/
 void millionParticlesApp::update()
 {
-
+    
 	mFbo[mBufferIn].bindFramebuffer();
     
     //set viewport to fbo size
@@ -309,7 +306,7 @@ void millionParticlesApp::update()
 	
 	GLenum buffer[3] = { GL_COLOR_ATTACHMENT0_EXT, GL_COLOR_ATTACHMENT1_EXT, GL_COLOR_ATTACHMENT2_EXT };
 	glDrawBuffers(3,buffer);
-
+    
 	mFbo[mBufferOut].bindTexture(0,0);
 	mFbo[mBufferOut].bindTexture(1,1);
 	mFbo[mBufferOut].bindTexture(2,2);
@@ -317,7 +314,7 @@ void millionParticlesApp::update()
 	mVelTex.bind(3);
 	mPosTex.bind(4);
     mNoiseTex.bind(5);
-
+    
 	mVelShader.bind();
 	mVelShader.uniform("positions",0);
 	mVelShader.uniform("velocities",1);
@@ -325,7 +322,7 @@ void millionParticlesApp::update()
 	mVelShader.uniform("oVelocities",3);
 	mVelShader.uniform("oPositions",4);
   	mVelShader.uniform("noiseTex",5);
-
+    
 	glBegin(GL_QUADS);
 	glTexCoord2f( 0.0f, 0.0f); glVertex2f( 0.0f, 0.0f);
 	glTexCoord2f( 0.0f, 1.0f); glVertex2f( 0.0f, PARTICLES);
@@ -334,79 +331,79 @@ void millionParticlesApp::update()
 	glEnd();
 	
 	mVelShader.unbind();
-
+    
 	mFbo[mBufferOut].unbindTexture();
 	
 	mVelTex.unbind();
 	mPosTex.unbind();
 	
 	mFbo[mBufferIn].unbindFramebuffer();
-
+    
 	mBufferIn = (mBufferIn + 1) % 2;
     mBufferOut = (mBufferIn + 1) % 2;
     
     //for recording
-//    if (getElapsedFrames() == 600)
-//        exit(0);
+    //    if (getElapsedFrames() == 600)
+    //        exit(0);
     
 }
 
 /**
-the draw method displays the last filled buffer
-**/
+ the draw method displays the last filled buffer
+ **/
 void millionParticlesApp::draw()
 {
     gl::setMatricesWindow( getWindowSize() );
 	gl::setViewport( getWindowBounds() );
 	
     gl::clear( ColorA( 0.0f, 0.0f, 0.0f, 1.0f ) );
-
+    
 	gl::enableAlphaBlending();
     glDisable(GL_DEPTH_TEST);
-
+    
 	glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
-
+    
 	mFbo[mBufferIn].bindTexture(0,0);
 	mFbo[mBufferIn].bindTexture(1,1);
 	mFbo[mBufferIn].bindTexture(2,2);
     
     mSpriteTex.bind(3);
-
+    
 	//Bewegungsshader
 	mPosShader.bind();
 	mPosShader.uniform("posTex",0);
 	mPosShader.uniform("velTex",1);
 	mPosShader.uniform("infTex",2);
    	mPosShader.uniform("spriteTex",3);
-
+    
 	mPosShader.uniform("scale",(float)PARTICLES);
-
+    
 	gl::color(ColorA(1.0f,1.0f,1.0f,1.0f));
     //glTranslatef(Vec3f(getWindowWidth() / 4  - PARTICLES,0.0f,0.0f));
     gl::pushMatrices();
-
+    
     glScalef(getWindowHeight() / (float)PARTICLES , getWindowHeight() / (float)PARTICLES ,1.0f);
     
 	// draw particles
     gl::draw( mVbo );
-
+    
     gl::popMatrices();
-   
+    
 	mPosShader.unbind();
     
     mSpriteTex.unbind();
-
+    
 	mFbo[mBufferIn].unbindTexture();
     
-//    writeImage( "/Users/hacku/Desktop/img/1m/" + toString(getElapsedFrames()) + ".tif",   copyWindowSurface() );
+    //    writeImage( "/Users/hacku/Desktop/img/1m/" + toString(getElapsedFrames()) + ".tif",   copyWindowSurface() );
     
-//	gl::color(Color(1,1,1));	
-//	gl::setMatricesWindow( getWindowSize() );
+    //	gl::color(Color(1,1,1));
+    //	gl::setMatricesWindow( getWindowSize() );
     
 	//drawText();
 	
 	gl::disableAlphaBlending();
-
+    
 }
 
 void millionParticlesApp::drawText()
@@ -427,13 +424,13 @@ void millionParticlesApp::drawText()
 	
 	char fps[50];
 	sprintf(fps, "FPS: %.2f", getAverageFps());
-
+    
 	char particleCount[50];
 	sprintf(particleCount, "Particles: %d", PARTICLES*PARTICLES);
 	
 	layout.addLine(fps);
 	layout.addLine(particleCount);
-
+    
     glEnable( GL_TEXTURE_2D );
 	gl::draw(layout.render(true), Vec2f(getWindowWidth() - 150,25));
    	glDisable( GL_TEXTURE_2D );

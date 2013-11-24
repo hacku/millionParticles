@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>47578EFF-2FD3-402F-A229-01A4DD78F187</string>
+	<key>IDESourceControlProjectName</key>
+	<string>millionParticles</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>7C35B747-37F8-4072-BD99-5411E910B6C5</key>
+		<string>https://github.com/hacku/millionParticles.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>xcode/millionParticles.xcodeproj/project.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>7C35B747-37F8-4072-BD99-5411E910B6C5</key>
+		<string>../../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/hacku/millionParticles.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>110</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>7C35B747-37F8-4072-BD99-5411E910B6C5</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>7C35B747-37F8-4072-BD99-5411E910B6C5</string>
+			<key>IDESourceControlWCCName</key>
+			<string>millionParticles</string>
+		</dict>
+	</array>
+</dict>
+</plist>
